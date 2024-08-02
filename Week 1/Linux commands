@@ -1,0 +1,186 @@
+# Linux Permissions and Basic Commands Practice
+
+This repository provides a guide and examples for practicing Linux permissions and basic commands. It includes creating files, assigning permissions, and user management tasks using various Linux commands.
+
+## Table of Contents
+
+1. [Creating Files and Assigning Permissions]
+2. [Basic Linux Commands]
+3. [Navigating Through Directories]
+4. [User and Group Management]
+5. [Additional Resources]
+
+## Creating Files and Assigning Permissions
+
+### Creating a File
+
+To create a file named `example.txt`, use the `touch` command:
+
+```bash
+touch example.txt
+```
+
+### Assigning Permissions
+
+To assign read, write, and execute permissions to different user categories (owner, group, others), use the `chmod` command. Here are some examples:
+
+- Assign read, write, and execute permissions to the owner, and read and execute permissions to the group and others:
+
+```bash
+chmod 755 example.txt
+```
+
+- Assign read and write permissions to the owner, and read permissions to the group and others:
+
+```bash
+chmod 644 example.txt
+```
+
+- Assign read, write, and execute permissions to the owner and the group, and no permissions to others:
+
+```bash
+chmod 770 example.txt
+```
+
+## Basic Linux Commands
+
+### List Files and Directories
+
+To list files and directories, use the `ls` command:
+
+```bash
+ls
+```
+
+To list all files, including hidden ones, use:
+
+```bash
+ls -a
+```
+
+### Change Directory
+
+To change to a different directory, use the `cd` command:
+
+```bash
+cd directory_name
+```
+
+### Create a Directory
+
+To create a new directory, use the `mkdir` command:
+
+```bash
+mkdir new_directory
+```
+
+### Remove a File or Directory
+
+To remove a file, use the `rm` command:
+
+```bash
+rm file_name
+```
+
+To remove a directory and its contents, use:
+
+```bash
+rm -r directory_name
+```
+
+### Create a New File
+
+To create a new file, use the `touch` command:
+
+```bash
+touch new_file.txt
+```
+
+## Navigating Through Directories
+
+### Navigate to Home Directory
+
+To navigate to the home directory, use:
+
+```bash
+cd ~
+```
+
+### Navigate to the Parent Directory
+
+To navigate to the parent directory, use:
+
+```bash
+cd ..
+```
+
+### Move a File to a Different Location
+
+To move a file to a different location, use the `mv` command:
+
+```bash
+mv file_name /path/to/destination/
+```
+
+### Copy a File
+
+To copy a file, use the `cp` command:
+
+```bash
+cp file_name /path/to/destination/
+```
+
+## User and Group Management
+
+### Create a New User
+
+To create a new user, use the `useradd` command:
+
+```bash
+sudo useradd new_user
+```
+
+### Create a New Group
+
+To create a new group, use the `groupadd` command:
+
+```bash
+sudo groupadd new_group
+```
+
+### Add User to a Group
+
+To add a user to a group, use the `usermod` command:
+
+```bash
+sudo usermod -aG new_group new_user
+```
+
+### Delete a User
+
+To delete a user, use the `userdel` command:
+
+```bash
+sudo userdel new_user
+```
+
+### Delete a Group
+
+To delete a group, use the `groupdel` command:
+
+```bash
+sudo groupdel new_group
+```
+
+## Additional Resources
+
+- [Linux File Permissions - YouTube](https://www.youtube.com/watch?v=iwolPf6kN-k)
+- [Linux File Permissions - Pluralsight](https://www.pluralsight.com/blog/it-ops/linux-file-permissions)
+- [Creating and Deleting Files and Directories in Linux - Red Hat](https://www.redhat.com/sysadmin/create-delete-files-directories-linux)
+- [Navigating the Filesystem in Linux Terminal - Red Hat](https://www.redhat.com/sysadmin/navigating-filesystem-linux-terminal)
+- [Managing Permissions in Linux - Red Hat](https://www.redhat.com/sysadmin/manage-permissions)
+- [Linux Tutorial - Javatpoint](https://www.javatpoint.com/linux-tutorial)
+
+---
+
+This guide provides a starting point for practicing Linux permissions and basic commands. Feel free to explore the resources linked for more in-depth learning and practice.
