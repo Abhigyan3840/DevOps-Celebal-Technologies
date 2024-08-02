@@ -1,0 +1,129 @@
+# Automated Deployment Pipelines with Azure DevOps for AKS
+
+This repository contains the implementation of automated deployment pipelines using Azure DevOps to orchestrate Azure Kubernetes Service (AKS) deployments for scalable and resilient containerized applications. 
+
+## Business Problem Statement
+
+A rapidly growing e-commerce company is expanding its online platform to accommodate increased customer demand. To ensure high availability, scalability, and reliability of its services, the company decides to migrate its applications to containers orchestrated by Azure Kubernetes Service (AKS). Leveraging Azure DevOps, the company aims to establish a robust CI/CD pipeline for automating the deployment of containerized applications on AKS.
+
+## Prerequisites
+
+- **Azure DevOps Account**: Access to an Azure DevOps organization and project.
+- **Azure Subscription**: Access to Azure resources (AKS, ACR, etc).
+- **Source Code**: Code repository (e.g., Git) for the application.
+
+## CI/CD Process
+
+### 1. Create Azure Resources
+
+Create a Resource Group, Azure Container Registry (ACR), and Azure Kubernetes Service (AKS) on the Azure Portal.
+
+```bash
+# Create Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create Azure Container Registry (ACR)
+az acr create --resource-group MyResourceGroup --name MyACR --sku Basic
+
+# Create Azure Kubernetes Service (AKS)
+az aks create --resource-group MyResourceGroup --name MyAKSCluster --node-count 1 --enable-addons monitoring --generate-ssh-keys --attach-acr MyACR
+```
+
+### 2. Assign a Specific Role
+
+Assign the necessary roles to the service principal.
+
+```bash
+az aks get-credentials --resource-group MyResourceGroup --name MyAKSCluster
+az role assignment create --assignee <Your Service Principal ID> --role Contributor --scope /subscriptions/<Your Subscription ID>/resourceGroups/MyResourceGroup
+```
+
+### 3. Set Up Service Connection in Azure DevOps
+
+In Azure DevOps, set up a service connection to allow Azure DevOps to interact with your Azure subscription.
+
+### 4. Create Repository
+
+Ensure your repository contains the following files:
+
+- `Dockerfile`
+- Kubernetes Manifest file (e.g., `deployment.yaml`)
+
+### 5. Create Continuous Integration Pipeline (CI)
+
+1. **Select Agent**: Define the agent pool in your pipeline YAML file.
+2. **Select Repository and Branch**: Specify your repository and branch.
+
+```yaml
+# azure-pipelines.yml
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  inputs:
+    command: 'build'
+    repository: '$(dockerId)/myapp'
+    dockerfile: '**/Dockerfile'
+    tags: '$(Build.BuildId)'
+
+- task: Docker@2
+  inputs:
+    command: 'push'
+    repository: '$(dockerId)/myapp'
+    tags: '$(Build.BuildId)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+```
+
+### 6. Create Continuous Deployment Pipeline (CD)
+
+1. **Add Artifacts**: Define the source of artifacts from the CI pipeline.
+2. **Add Deployment Tasks**: Use the Kubernetes manifests for deployment.
+
+```yaml
+# release-pipeline.yml
+trigger:
+- main
+
+resources:
+  pipelines:
+    - pipeline: 'CI'
+      source: 'myapp-ci'
+
+jobs:
+- deployment: Deploy
+  environment: 'AKS'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: KubernetesManifest@0
+          inputs:
+            action: 'deploy'
+            manifests: '$(Pipeline.Workspace)/drop/deployment.yaml'
+            imagePullSecrets: '$(acrName)'
+            containers: '$(dockerId)/myapp:$(Build.BuildId)'
+```
+
+### 7. Save and Create Release
+
+After setting up the pipelines, save your changes and create a release to start the deployment process.
+
+## Conclusion
+
+This repository demonstrates the setup of a CI/CD pipeline using Azure DevOps to automate the deployment of containerized applications on Azure Kubernetes Service (AKS). By following these steps, you can ensure scalable, resilient, and highly available services for your applications.
+
+For more detailed information, please refer to the [Azure DevOps documentation](https://docs.microsoft.com/en-us/azure/devops/).
